@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">animalsupermarket</string>
+    <string name="app_title">宠物大超市</string>
+    <string name="error_email_password_empty">邮箱或密码不能为空</string>
+    <string name="error_password_mismatch">两次输入的密码不一致</string>
+    <string name="error_all_fields_required">请填写所有字段</string>
+</resources>
