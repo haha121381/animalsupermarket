@@ -3,7 +3,18 @@ package com.example.animalsupermarket.screens.category
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -12,12 +23,24 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.automirrored.filled.FilterList
 import androidx.compose.material.icons.filled.Pets
-import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,7 +53,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.animalsupermarket.model.Product
-import com.example.animalsupermarket.ui.theme.*
+import com.example.animalsupermarket.ui.theme.CardBackground
+import com.example.animalsupermarket.ui.theme.IconColor
+import com.example.animalsupermarket.ui.theme.Primary
+import com.example.animalsupermarket.ui.theme.TextColorSecondary
+import com.example.animalsupermarket.viewmodel.CartViewModel
+import com.example.animalsupermarket.viewmodel.CategoryViewModel
 import com.example.animalsupermarket.viewmodel.FavoritesViewModel
 import com.example.animalsupermarket.viewmodel.HomeViewModel
 
@@ -38,11 +66,13 @@ import com.example.animalsupermarket.viewmodel.HomeViewModel
 @Composable
 fun CategoryScreen(
     navController: NavController,
-    homeViewModel: HomeViewModel = hiltViewModel(),
-    favoritesViewModel: FavoritesViewModel = hiltViewModel()
+    categoryViewModel: CategoryViewModel,
+    cartViewModel: CartViewModel,
+    favoritesViewModel: FavoritesViewModel
 ) {
     var selectedCategory by remember { mutableStateOf("狗粮") }
     val categories = listOf("狗粮", "猫粮", "玩具", "用品", "医疗", "美容")
+    val products by categoryViewModel.products.collectAsState()
 
     Scaffold(
         topBar = {
@@ -70,9 +100,10 @@ fun CategoryScreen(
             )
             ProductGrid(
                 navController = navController,
-                homeViewModel = homeViewModel,
+                products = products,
                 favoritesViewModel = favoritesViewModel,
-                selectedCategory = selectedCategory
+                selectedCategory = selectedCategory,
+                cartViewModel = cartViewModel
             )
         }
     }
@@ -137,11 +168,11 @@ fun CategoryItem(category: String, isSelected: Boolean, onSelected: () -> Unit) 
 @Composable
 fun ProductGrid(
     navController: NavController,
-    homeViewModel: HomeViewModel,
+    products: List<Product>,
     favoritesViewModel: FavoritesViewModel,
-    selectedCategory: String
+    selectedCategory: String,
+    cartViewModel: CartViewModel
 ) {
-    val products by homeViewModel.products.collectAsState()
     val filteredProducts = products.filter { it.category == selectedCategory }
 
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
@@ -176,7 +207,8 @@ fun ProductGrid(
                     favoritesViewModel = favoritesViewModel,
                     onClick = {
                         navController.navigate("productDetails/${product.id}")
-                    }
+                    },
+                    cartViewModel = cartViewModel
                 )
             }
         }
@@ -194,7 +226,7 @@ fun FilterAndSort() {
         Text("销量")
         Row {
             Text("筛选")
-            Icon(Icons.Default.FilterList, contentDescription = "Filter")
+            Icon(Icons.AutoMirrored.Filled.FilterList, contentDescription = "Filter")
         }
     }
 }
@@ -203,8 +235,11 @@ fun FilterAndSort() {
 fun ProductCard(
     product: Product,
     favoritesViewModel: FavoritesViewModel,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    cartViewModel: CartViewModel
 ) {
+    val isFavorite by favoritesViewModel.isFavoriteFlow(product.id).collectAsState(initial = false)
+
     Card(
         modifier = Modifier.clickable(onClick = onClick),
         shape = RoundedCornerShape(12.dp),

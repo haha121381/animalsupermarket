@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -160,7 +161,7 @@ fun CartListItem(
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     IconButton(onClick = onDecrease, modifier = Modifier.size(24.dp)) {
-                        Icon(Icons.Default.Remove, contentDescription = "Decrease")
+                        Icon(androidx.compose.material.icons.filled.Remove, contentDescription = "Decrease")
                     }
                     Text(
                         cartItem.quantity.toString(),

@@ -18,6 +18,9 @@ import com.example.animalsupermarket.screens.profile.NotificationSettingsScreen
 import com.example.animalsupermarket.screens.profile.PrivacyScreen
 import com.example.animalsupermarket.screens.profile.SettingsScreen
 import com.example.animalsupermarket.viewmodel.FavoritesViewModel
+import com.example.animalsupermarket.viewmodel.AddressViewModel
+import com.example.animalsupermarket.viewmodel.CouponsViewModel
+import com.example.animalsupermarket.viewmodel.HistoryViewModel
 
 fun NavGraphBuilder.profileNavGraph(
     navController: NavController,

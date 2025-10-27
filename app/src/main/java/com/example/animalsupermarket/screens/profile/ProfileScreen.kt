@@ -7,9 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Wallet
-import androidx.compose.material.icons.filled.LocalShipping
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.Lock
@@ -17,6 +15,7 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.HeadsetMic
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -208,7 +207,7 @@ fun MyOrdersSection(onViewAllOrders: () -> Unit) {
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
                 OrderActionItem(icon = Icons.Default.Wallet, text = "待付款", badgeCount = 2)
-                OrderActionItem(icon = Icons.Default.LocalShipping, text = "待收货", badgeCount = 1)
+                OrderActionItem(icon = Icons.AutoMirrored.Filled.LocalShipping, text = "待收货", badgeCount = 1)
                 OrderActionItem(icon = Icons.Default.Star, text = "待评价", badgeCount = 3)
                 OrderActionItem(icon = Icons.Default.SwapHoriz, text = "退换货")
             }

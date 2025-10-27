@@ -133,7 +133,7 @@ fun ProductDetailsScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         IconButton(onClick = { cartViewModel.decreaseQuantity(product!!.id) }) {
-                            Icon(Icons.Default.Remove, contentDescription = "Decrease")
+                            Icon(androidx.compose.material.icons.filled.Remove, contentDescription = "Decrease")
                         }
                         Text(cartItem.quantity.toString(), style = MaterialTheme.typography.headlineSmall)
                         IconButton(onClick = { cartViewModel.increaseQuantity(product!!.id) }) {

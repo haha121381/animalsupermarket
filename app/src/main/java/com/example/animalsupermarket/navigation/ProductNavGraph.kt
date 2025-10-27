@@ -14,6 +14,7 @@ import com.example.animalsupermarket.screens.details.ProductDetailsScreen
 import com.example.animalsupermarket.viewmodel.CartViewModel
 import com.example.animalsupermarket.viewmodel.FavoritesViewModel
 import com.example.animalsupermarket.viewmodel.ProductDetailsViewModel
+import com.example.animalsupermarket.viewmodel.HistoryViewModel
 
 fun NavGraphBuilder.productNavGraph(
     navController: NavController,
@@ -30,8 +31,8 @@ fun NavGraphBuilder.productNavGraph(
         ) { backStackEntry ->
             val category = backStackEntry.arguments?.getString("category")
             if (category != null) {
-                val categoryViewModel: CategoryViewModel = viewModel()
-                CategoryScreen(navController, categoryViewModel, cartViewModel)
+                val categoryViewModel: com.example.animalsupermarket.viewmodel.CategoryViewModel = hiltViewModel()
+                CategoryScreen(navController, categoryViewModel, cartViewModel,favoritesViewModel)
             }
         }
         composable(

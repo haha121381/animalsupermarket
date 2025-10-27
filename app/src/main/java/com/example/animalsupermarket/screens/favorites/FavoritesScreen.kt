@@ -9,13 +9,16 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.example.animalsupermarket.screens.home.ProductCard
+import com.example.animalsupermarket.screens.category.ProductCard
 import com.example.animalsupermarket.viewmodel.FavoritesViewModel
 import androidx.navigation.NavController
+import com.example.animalsupermarket.viewmodel.CartViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun FavoritesScreen(favoritesViewModel: FavoritesViewModel, navController: NavController) {
     val favorites by favoritesViewModel.favorites.collectAsState()
+    val cartViewModel: CartViewModel = hiltViewModel()
 
     if (favorites.isEmpty()) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -29,7 +32,8 @@ fun FavoritesScreen(favoritesViewModel: FavoritesViewModel, navController: NavCo
                     favoritesViewModel = favoritesViewModel,
                     onClick = {
                         navController.navigate("productDetails/${product.id}")
-                    }
+                    },
+                    cartViewModel = cartViewModel
                 )
             }
         }

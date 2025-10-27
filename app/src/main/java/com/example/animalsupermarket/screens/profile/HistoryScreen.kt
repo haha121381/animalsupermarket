@@ -14,9 +14,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.animalsupermarket.screens.home.ProductCard
+import com.example.animalsupermarket.screens.category.ProductCard
 import com.example.animalsupermarket.viewmodel.FavoritesViewModel
 import com.example.animalsupermarket.viewmodel.HistoryViewModel
+import com.example.animalsupermarket.viewmodel.CartViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -26,6 +27,7 @@ fun HistoryScreen(
     favoritesViewModel: FavoritesViewModel = hiltViewModel()
 ) {
     val history by historyViewModel.history.collectAsState()
+    val cartViewModel: CartViewModel = hiltViewModel()
 
     Scaffold(
         topBar = {
@@ -45,7 +47,8 @@ fun HistoryScreen(
                     favoritesViewModel = favoritesViewModel,
                     onClick = {
                         navController.navigate("productDetails/${product.id}")
-                    }
+                    },
+                    cartViewModel = cartViewModel
                 )
             }
         }

@@ -3,7 +3,6 @@ package com.example.animalsupermarket.screens.profile
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -58,6 +57,6 @@ fun SettingsItem(title: String, onClick: () -> Unit) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(title, style = MaterialTheme.typography.bodyLarge)
-        Icon(Icons.Filled.ArrowForwardIos, contentDescription = null)
+        Icon(Icons.AutoMirrored.Filled.ArrowForwardIos, contentDescription = null)
     }
 }

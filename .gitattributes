@@ -1,1 +1,12 @@
-*.hprof filter=lfs diff=lfs merge=lfs -text
+# 将大媒体文件交给 git-lfs 管理（如未启用 git-lfs，请先安装并运行 `git lfs install`）
+*.png filter=lfs diff=lfs merge=lfs -text
+*.jpg filter=lfs diff=lfs merge=lfs -text
+*.jpeg filter=lfs diff=lfs merge=lfs -text
+*.mp4 filter=lfs diff=lfs merge=lfs -text
+*.mov filter=lfs diff=lfs merge=lfs -text
+*.zip filter=lfs diff=lfs merge=lfs -text
+*.aar filter=lfs diff=lfs merge=lfs -text
+
+# 忽略构建输出（示例，按项目实际路径调整）
+/app/build/** linguist-vendored
+*.iml export-ignore
