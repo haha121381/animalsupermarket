@@ -6,7 +6,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -21,13 +20,15 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
+import androidx.compose.foundation.clickable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -59,10 +60,13 @@ fun ProductDetailsScreen(
 ) {
     LaunchedEffect(productId) {
         productDetailsViewModel.getProductById(productId)
-        productDetailsViewModel.product.value?.let { historyViewModel.addToHistory(it) }
     }
 
     val product by productDetailsViewModel.product.collectAsState()
+
+    LaunchedEffect(product) {
+        product?.let { historyViewModel.addToHistory(it) }
+    }
 
     if (product == null) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -71,7 +75,14 @@ fun ProductDetailsScreen(
         return
     }
 
-    val isFavorite = favoritesViewModel.isFavorite(product!!)
+    val isFavorite by favoritesViewModel.isFavoriteFlow(product!!.id).collectAsState(initial = false)
+    val snackbarHostState = remember { SnackbarHostState() }
+
+//    LaunchedEffect(Unit) {
+//        cartViewModel.errorFlow.collect { message ->
+//            snackbarHostState.showSnackbar(message = message)
+//        }
+//    }
 
     Scaffold(
         topBar = {
@@ -83,7 +94,8 @@ fun ProductDetailsScreen(
                     }
                 }
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
@@ -91,26 +103,7 @@ fun ProductDetailsScreen(
                 .padding(paddingValues)
         ) {
             item {
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    Image(
-                        painter = rememberAsyncImagePainter(product!!.imageUrl),
-                        contentDescription = product!!.name,
-                        modifier = Modifier
-                            .height(300.dp)
-                            .fillMaxWidth(),
-                        contentScale = ContentScale.Crop
-                    )
-                    IconButton(
-                        onClick = { favoritesViewModel.toggleFavorite(product!!) },
-                        modifier = Modifier.align(Alignment.TopEnd)
-                    ) {
-                        Icon(
-                            imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                            contentDescription = "Favorite",
-                            tint = if (isFavorite) MaterialTheme.colorScheme.primary else Color.Gray
-                        )
-                    }
-                }
+                com.example.animalsupermarket.screens.components.Carousel(images = listOf(product!!.imageUrl))
                 Spacer(modifier = Modifier.height(16.dp))
                 Column(modifier = Modifier.padding(horizontal = 16.dp)) {
                     Text(text = product!!.name, style = MaterialTheme.typography.headlineMedium)
@@ -158,7 +151,10 @@ fun ProductDetailsScreen(
 
 @Composable
 fun CommentSection(productId: Int, navController: NavController, commentViewModel: CommentViewModel = viewModel()) {
-    val comments = commentViewModel.getCommentsForProduct(productId)
+    val comments by commentViewModel.comments.collectAsState()
+    val productComments = comments[productId] ?: emptyList()
+    var newCommentText by remember { mutableStateOf("") }
+    var newCommentRating by remember { mutableStateOf(0) }
 
     Column(modifier = Modifier.padding(16.dp)) {
         Row(
@@ -166,21 +162,60 @@ fun CommentSection(productId: Int, navController: NavController, commentViewMode
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("用户评价 (${comments.size})", style = MaterialTheme.typography.headlineSmall)
+            Text("用户评价 (${productComments.size})", style = MaterialTheme.typography.headlineSmall)
             Button(onClick = { navController.navigate("comments/$productId") }) {
                 Text("查看全部")
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
-        if (comments.isEmpty()) {
+        if (productComments.isEmpty()) {
             Text("暂无评价")
         } else {
             LazyColumn(modifier = Modifier.height(200.dp)) {
-                items(comments.take(3)) { comment ->
+                items(productComments.take(3)) { comment ->
                     CommentItem(comment = comment)
                     Spacer(modifier = Modifier.height(8.dp))
                 }
             }
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        HorizontalDivider()
+        Spacer(modifier = Modifier.height(16.dp))
+        Text("添加你的评价", style = MaterialTheme.typography.headlineSmall)
+        Spacer(modifier = Modifier.height(8.dp))
+        Row {
+            (1..5).forEach { rating ->
+                Icon(
+                    imageVector = if (rating <= newCommentRating) Icons.Default.Star else Icons.Default.FavoriteBorder,
+                    contentDescription = "Rating $rating",
+                    modifier = Modifier.clickable { newCommentRating = rating },
+                    tint = if (rating <= newCommentRating) Color(0xFFFFC107) else Color.Gray
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        androidx.compose.material3.TextField(
+            value = newCommentText,
+            onValueChange = { newCommentText = it },
+            label = { Text("输入你的评价") },
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Button(
+            onClick = {
+                commentViewModel.addComment(
+                    productId = productId,
+                    userName = "当前用户", // Replace with actual user name
+                    userAvatarUrl = "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y", // Replace with actual user avatar
+                    rating = newCommentRating,
+                    text = newCommentText
+                )
+                newCommentText = ""
+                newCommentRating = 0
+            },
+            enabled = newCommentText.isNotBlank() && newCommentRating > 0
+        ) {
+            Text("提交评价")
         }
     }
 }

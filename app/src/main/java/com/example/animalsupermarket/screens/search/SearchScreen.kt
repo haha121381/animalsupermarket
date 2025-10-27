@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.History
 import androidx.compose.material3.*
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.text.KeyboardActions
@@ -115,7 +114,7 @@ fun SearchHistory(
                         .padding(vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(Icons.Default.History, contentDescription = "History Icon")
+                    Icon(androidx.compose.material.icons.filled.History, contentDescription = "History Icon")
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(query)
                 }

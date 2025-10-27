@@ -19,10 +19,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.animalsupermarket.R
+import com.example.animalsupermarket.viewmodel.AuthViewModel
 import kotlinx.coroutines.delay
 
 @Composable
-fun WelcomeScreen(navController: NavController) {
+fun WelcomeScreen(navController: NavController, authViewModel: AuthViewModel) {
     val scale = remember {
         androidx.compose.animation.core.Animatable(0f)
     }

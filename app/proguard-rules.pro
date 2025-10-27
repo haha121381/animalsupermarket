@@ -19,3 +19,21 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Compose
+-keep class androidx.compose.ui.** {*;}
+-dontwarn androidx.compose.ui.**
+-keep class androidx.compose.material3.** {*;}
+-dontwarn androidx.compose.material3.**
+
+# Hilt
+-keep class com.example.animalsupermarket.di.** {*;}
+-keep class com.example.animalsupermarket.viewmodel.** {*;}
+
+# Accompanist
+-keep class com.google.accompanist.** {*;}
+-dontwarn com.google.accompanist.**
+
+# ViewModel
+-keep class androidx.lifecycle.ViewModelProvider {*;}
+-keep class * extends androidx.lifecycle.ViewModel {*;}

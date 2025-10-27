@@ -72,7 +72,6 @@ class HomeViewModel @Inject constructor(private val repository: ProductRepositor
             }
         }
     }
-    }
 
     fun onSearchQueryChange(query: String) {
         _filteredProducts.value = _products.value.filter {
